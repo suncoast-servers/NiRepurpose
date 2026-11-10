@@ -80,9 +80,32 @@ python NiRepurpose.py
 
 Source/dev mode uses `ffmpeg` and `exiftool` from PATH (or from a local `tools/` folder if present).
 
+## Bundled tools (Full edition)
+
+Full builds ship pinned **stable** releases. Pins (version, download URL, SHA-256) live in [`scripts/toolchain.json`](scripts/toolchain.json).
+
+| Tool | Version | Windows x64 | Linux x64 | macOS arm64 / x86_64 |
+|------|---------|-------------|-----------|----------------------|
+| FFmpeg | 9.0.2 (stable) | [gyan.dev](https://www.gyan.dev/ffmpeg/builds/) essentials build, committed via Git LFS | [Martin Riedl](https://ffmpeg.martin-riedl.de/) static build (glibc ≥ 2.35) | [Martin Riedl](https://ffmpeg.martin-riedl.de/) static builds |
+| ExifTool | 13.55 (production) | Official Windows package (`exiftool.exe` + `exiftool_files`), Git LFS | Official `Image-ExifTool` Perl distribution (`exiftool` + `lib/`) | Same as Linux |
+
+ExifTool marks some versions as **production releases** ([history](https://exiftool.org/history.html)). Later numbered versions are development releases, so Full builds follow the production line.
+
+To fetch and verify the pinned tools locally (on Linux/macOS this also lets source runs use `tools/`):
+
+```bash
+python scripts/fetch_tools.py              # download for this OS into tools/, check SHA-256 and versions
+python scripts/fetch_tools.py --verify-only  # check what is already in tools/ (e.g. Windows LFS files)
+python scripts/smoke_test.py               # strip metadata + transcode sample media with those tools
+```
+
+On Windows, `tools/` binaries come from Git LFS: run `git lfs pull` after cloning.
+
 ## Packaging
 
-Tagging `v*` triggers GitHub Actions and builds Lite + Full for Windows, Linux, macOS Apple Silicon, and macOS Intel.
+Tagging `v*` triggers GitHub Actions and builds Lite + Full for Windows, Linux, macOS Apple Silicon, and macOS Intel. Full builds install the pinned tools with `scripts/fetch_tools.py` (Windows uses the LFS files) and run `scripts/smoke_test.py` before packaging. Release notes list the bundled tool versions.
+
+Pull requests that touch the toolchain run **Toolchain check** (`.github/workflows/toolchain-check.yml`) on all four platforms.
 
 ## Contributing (contractors & collaborators)
 

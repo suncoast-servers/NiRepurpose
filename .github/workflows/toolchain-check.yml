@@ -1,0 +1,61 @@
+name: Toolchain check
+
+# Verifies the pinned Full-edition tools (scripts/toolchain.json) on every platform the release
+# workflow builds for: download + sha256 check, version check, and a processing smoke test.
+on:
+  pull_request:
+    paths:
+      - "scripts/toolchain.json"
+      - "scripts/fetch_tools.py"
+      - "scripts/smoke_test.py"
+      - "tools/**"
+      - "NiRepurpose.py"
+      - ".github/workflows/build-release.yml"
+      - ".github/workflows/toolchain-check.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  toolchain:
+    name: Toolchain (${{ matrix.platform }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            platform: windows-x64
+          - os: ubuntu-latest
+            platform: linux-x64
+          - os: macos-latest
+            platform: macos-arm64
+          - os: macos-15-intel
+            platform: macos-x64
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          lfs: ${{ matrix.platform == 'windows-x64' }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Install dependencies
+        run: python -m pip install --upgrade pip && pip install -r requirements.txt
+
+      - name: Verify committed Windows tools (Git LFS)
+        if: matrix.platform == 'windows-x64'
+        run: python scripts/fetch_tools.py --verify-only
+
+      - name: Download and verify pinned tools
+        if: matrix.platform != 'windows-x64'
+        run: python scripts/fetch_tools.py --platform ${{ matrix.platform }}
+
+      - name: Smoke test (strip metadata + transcode)
+        run: python scripts/smoke_test.py

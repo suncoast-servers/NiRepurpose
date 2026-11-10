@@ -1,0 +1,60 @@
+{
+  "_comment": "Pinned ffmpeg + ExifTool for Full builds. Edit via PR only; scripts/fetch_tools.py downloads, verifies sha256 and extracts into tools/.",
+  "ffmpeg": {
+    "version": "9.0.2",
+    "channel": "stable",
+    "version_regex": "ffmpeg version n?9\\.0\\.2(?![0-9])",
+    "platforms": {
+      "windows-x64": {
+        "source": "gyan.dev release build (GitHub mirror GyanD/codexffmpeg), essentials variant",
+        "url": "https://github.com/GyanD/codexffmpeg/releases/download/9.0.2/ffmpeg-9.0.2-essentials_build.zip",
+        "sha256": "60f467265b1e312373dbcd92200c2618a74850f98d3d078e94296bb3fa2047ba",
+        "extract": [{"from": "*/bin/ffmpeg.exe", "to": "ffmpeg.exe"}]
+      },
+      "linux-x64": {
+        "source": "Martin Riedl static release build (needs glibc >= 2.35)",
+        "url": "https://ffmpeg.martin-riedl.de/download/linux/amd64/1789931100_9.0.2/ffmpeg.zip",
+        "sha256": "fa8ecf4abbd290d98f7d188b8649cc6b391ae209a98452be955a15aab1909d7f",
+        "extract": [{"from": "ffmpeg", "to": "ffmpeg"}]
+      },
+      "macos-arm64": {
+        "source": "Martin Riedl static release build",
+        "url": "https://ffmpeg.martin-riedl.de/download/macos/arm64/1789931890_9.0.2/ffmpeg.zip",
+        "sha256": "c8ed4c4e6978a03c485edbfe4e0a5dc2380f8a30bba5150531b31b094492d924",
+        "extract": [{"from": "ffmpeg", "to": "ffmpeg"}]
+      },
+      "macos-x64": {
+        "source": "Martin Riedl static release build",
+        "url": "https://ffmpeg.martin-riedl.de/download/macos/amd64/1789931006_9.0.2/ffmpeg.zip",
+        "sha256": "7c6b4125b191cbf773832dc51f424cf2b6bb7da43007d1e066f95909e47cacd4",
+        "extract": [{"from": "ffmpeg", "to": "ffmpeg"}]
+      }
+    }
+  },
+  "exiftool": {
+    "version": "13.55",
+    "channel": "production",
+    "version_regex": "^13\\.55$",
+    "platforms": {
+      "windows-x64": {
+        "source": "Official Windows 64-bit package (exiftool.org via SourceForge)",
+        "url": "https://sourceforge.net/projects/exiftool/files/exiftool-13.55_64.zip/download",
+        "sha256": "9fadaf5221dcb07a5d018e21c8529e257917d2fad1fdfc8e64855c4fb73293df",
+        "extract": [
+          {"from": "*/exiftool(-k).exe", "to": "exiftool.exe"},
+          {"from": "*/exiftool_files/", "to": "exiftool_files/"}
+        ]
+      },
+      "unix": {
+        "source": "Official Perl distribution Image-ExifTool (exiftool.org via SourceForge)",
+        "url": "https://sourceforge.net/projects/exiftool/files/Image-ExifTool-13.55.tar.gz/download",
+        "sha256": "5f4c81d34ad406538c2871ad72dbfceb5d9b412b2f16cbbeb4d712d270846667",
+        "extract": [
+          {"from": "*/exiftool", "to": "exiftool"},
+          {"from": "*/lib/", "to": "lib/"}
+        ],
+        "used_by": ["linux-x64", "macos-arm64", "macos-x64"]
+      }
+    }
+  }
+}

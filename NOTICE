@@ -14,18 +14,22 @@ NiRepurpose uses ExifTool and FFmpeg.
 - **Lite releases** expect these tools installed on the user's PATH.
 - **Full releases** bundle these tools for easier distribution.
 
-1) ExifTool
+1) ExifTool 13.55 (production release)
    ExifTool by Phil Harvey (Perl / distribution license).
    Project: ExifTool
    Source: https://exiftool.org/
+   Windows Full builds bundle the official Windows package, which includes
+   Strawberry Perl (see tools/exiftool_files/Licenses_Strawberry_Perl.zip).
 
-2) FFmpeg
+2) FFmpeg 9.0.2 (stable release)
    FFmpeg is licensed under the LGPL/GPL depending on build configuration.
+   The bundled builds below are GPL builds.
    Project: FFmpeg
    Source: https://ffmpeg.org/
+   Windows build: https://www.gyan.dev/ffmpeg/builds/ (essentials)
+   Linux and macOS builds: https://ffmpeg.martin-riedl.de/
 
-macOS Full builds may download a static FFmpeg binary during CI from:
-https://github.com/eugeneware/ffmpeg-static
+Exact download URLs and SHA-256 checksums: scripts/toolchain.json
 
 ------------------------------------------------------------
 Artwork

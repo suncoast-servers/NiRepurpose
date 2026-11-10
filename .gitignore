@@ -8,3 +8,7 @@ Thumbs.db
 .venv/
 venv/
 .env/
+# Toolchain fetched locally on Linux/macOS (scripts/fetch_tools.py); Windows tools are in Git LFS
+tools/ffmpeg
+tools/exiftool
+tools/lib/
