@@ -4,7 +4,7 @@
 [![License: Apache-2.0](https://img.shields.io/github/license/suncoast-servers/NiRepurpose)](LICENSE)
 [![Python](https://img.shields.io/badge/Python-3.12+-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 
-**Organization:** [suncoast-servers](https://github.com/suncoast-servers) · **Project lead / merge authority:** [@TheDevWhoSaysNi](https://github.com/TheDevWhoSaysNi)
+**Organization:** [suncoast-servers](https://github.com/suncoast-servers) · **Project lead / merge authority:** [@TheDevWhoSaysNi](https://github.com/TheDevWhoSaysNi) · **Delivery lead:** [@owaischanna](https://github.com/owaischanna)
 
 NiRepurpose is a desktop app inspired by NiClean, focused on bulk repurposing media for social posting.
 

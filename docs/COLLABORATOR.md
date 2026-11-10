@@ -1,6 +1,8 @@
 # NiRepurpose — contractor onboarding
 
-Welcome. You are helping improve **NiRepurpose**, a desktop Python app for bulk social-media-friendly media processing.
+Welcome, **Owais** ([@owaischanna](https://github.com/owaischanna)).
+
+You are the **delivery lead** for NiRepurpose (desktop Python app for bulk social-media-friendly media processing).
 
 **Ryan** ([@TheDevWhoSaysNi](https://github.com/TheDevWhoSaysNi)) owns the repository, releases, and **merge authority**. You work through **issues and pull requests** on GitHub.
 
