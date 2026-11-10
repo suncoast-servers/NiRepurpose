@@ -1,6 +1,7 @@
 # NiRepurpose — product roadmap
 
 **Owner / merge authority:** [@TheDevWhoSaysNi](https://github.com/TheDevWhoSaysNi)  
+**Delivery lead:** [@owaischanna](https://github.com/owaischanna)  
 **Organization:** [suncoast-servers](https://github.com/suncoast-servers)  
 **Repo:** [suncoast-servers/NiRepurpose](https://github.com/suncoast-servers/NiRepurpose)
 

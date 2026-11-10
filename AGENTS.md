@@ -11,7 +11,7 @@ Desktop **Python** app using **CustomTkinter** for bulk image/video repurposing 
 | Role | Who |
 |------|-----|
 | **Repo & release owner** | Ryan (@TheDevWhoSaysNi) — merges, tags, release go/no-go |
-| **Contractors** | Feature branches and PRs per assigned issues |
+| **Delivery lead** | Owais (@owaischanna) — feature branches, PRs, milestone work |
 
 ## Git rules
 
