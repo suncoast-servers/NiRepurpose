@@ -12,7 +12,17 @@ on:
       - "NiRepurpose.py"
       - ".github/workflows/build-release.yml"
       - ".github/workflows/toolchain-check.yml"
+      - ".github/workflows/toolchain-update.yml"
   workflow_dispatch:
+  # Called by toolchain-update.yml on its automation branch: pushes made with GITHUB_TOKEN
+  # do not trigger pull_request workflows, so the update workflow runs this check itself.
+  workflow_call:
+    inputs:
+      ref:
+        description: "Branch or commit to check out (default: the triggering ref)"
+        type: string
+        required: false
+        default: ""
 
 permissions:
   contents: read
@@ -38,6 +48,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
+          ref: ${{ inputs.ref }}
           lfs: ${{ matrix.platform == 'windows-x64' }}
 
       - uses: actions/setup-python@v5
@@ -48,6 +59,9 @@ jobs:
 
       - name: Install dependencies
         run: python -m pip install --upgrade pip && pip install -r requirements.txt
+
+      - name: Compile check
+        run: python -m compileall -q NiRepurpose.py scripts
 
       - name: Verify committed Windows tools (Git LFS)
         if: matrix.platform == 'windows-x64'

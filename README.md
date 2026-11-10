@@ -107,6 +107,8 @@ Tagging `v*` triggers GitHub Actions and builds Lite + Full for Windows, Linux, 
 
 Pull requests that touch the toolchain run **Toolchain check** (`.github/workflows/toolchain-check.yml`) on all four platforms.
 
+A weekly **Toolchain update** workflow detects new stable ffmpeg / production ExifTool releases, verifies them on all platforms and opens a PR. It never merges, pushes to `main` or tags. Details and failure modes: [docs/TOOLCHAIN.md](docs/TOOLCHAIN.md).
+
 ## Contributing (contractors & collaborators)
 
 This repo uses **pull requests into `main`**. Direct pushes to `main` are blocked (ruleset + CODEOWNERS).

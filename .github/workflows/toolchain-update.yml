@@ -1,0 +1,128 @@
+name: Toolchain update
+
+# Weekly check for new stable ffmpeg / production ExifTool releases (docs/TOOLCHAIN.md).
+# When every platform has a new version: verify the downloads, push an automation/toolchain-*
+# branch, run the Toolchain check on it, then open a PR for review.
+# Never pushes to main and never creates tags or releases.
+on:
+  schedule:
+    - cron: "23 7 * * 1" # Mondays 07:23 UTC
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Only report what would change (no branch, no PR)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: toolchain-update
+  cancel-in-progress: false
+
+jobs:
+  detect:
+    name: Detect and prepare update
+    runs-on: ubuntu-latest
+    outputs:
+      branch: ${{ steps.check.outputs.branch }}
+      title: ${{ steps.check.outputs.title }}
+      pushed: ${{ steps.push.outputs.pushed }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # Unchanged Windows binaries stay as LFS pointers; new ones go through the LFS filter on commit.
+          lfs: false
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Check upstream releases
+        id: check
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
+        run: |
+          set -o pipefail
+          ARGS=(--github-output "$GITHUB_OUTPUT")
+          if [ "$DRY_RUN" != "true" ]; then ARGS+=(--apply --pr-body pr-body.md); fi
+          python scripts/check_toolchain_updates.py "${ARGS[@]}" | tee check.log
+          {
+            echo "### Toolchain update check"
+            echo '```'
+            cat check.log
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Push update branch
+        id: push
+        if: steps.check.outputs.changed == 'true'
+        env:
+          BRANCH: ${{ steps.check.outputs.branch }}
+          TITLE: ${{ steps.check.outputs.title }}
+        run: |
+          if git ls-remote --exit-code --heads origin "$BRANCH" > /dev/null; then
+            echo "Branch \`$BRANCH\` already exists: this update was already proposed." | tee -a "$GITHUB_STEP_SUMMARY"
+            echo "pushed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git lfs install --local
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$BRANCH"
+          git add -A scripts/toolchain.json README.md NOTICE tools
+          git commit -m "$TITLE" -m "Automated by .github/workflows/toolchain-update.yml (issue #3)."
+          git push origin "$BRANCH"
+          echo "pushed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Keep PR description
+        if: steps.push.outputs.pushed == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr-body
+          path: pr-body.md
+
+  verify:
+    name: Verify
+    needs: detect
+    if: needs.detect.outputs.pushed == 'true'
+    uses: ./.github/workflows/toolchain-check.yml
+    with:
+      ref: ${{ needs.detect.outputs.branch }}
+
+  open-pr:
+    name: Open pull request
+    needs: [detect, verify]
+    if: always() && needs.detect.outputs.pushed == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: pr-body
+
+      - name: Create pull request
+        env:
+          # Optional repo secret TOOLCHAIN_PR_TOKEN (fine-grained PAT) makes the normal PR checks run too.
+          GH_TOKEN: ${{ secrets.TOOLCHAIN_PR_TOKEN || github.token }}
+          BRANCH: ${{ needs.detect.outputs.branch }}
+          TITLE: ${{ needs.detect.outputs.title }}
+          VERIFY: ${{ needs.verify.result }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          DRAFT=()
+          if [ "$VERIFY" = "success" ]; then
+            STATUS="✅ **Toolchain check passed** on all four platforms ([workflow run]($RUN_URL))."
+          else
+            STATUS="❌ **Toolchain check result: $VERIFY** ([workflow run]($RUN_URL)). Opened as a draft: investigate before merging."
+            DRAFT=(--draft)
+          fi
+          { echo "$STATUS"; echo; cat pr-body.md; } > body.md
+          if ! gh pr create --repo "$GITHUB_REPOSITORY" --base main --head "$BRANCH" \
+                --title "$TITLE" --body-file body.md "${DRAFT[@]}"; then
+            echo "::error::Could not open the pull request. Enable 'Allow GitHub Actions to create and approve pull requests' (Settings > Actions > General) or add a TOOLCHAIN_PR_TOKEN secret. The branch is pushed: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/compare/main...$BRANCH"
+            exit 1
+          fi

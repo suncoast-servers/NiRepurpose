@@ -34,7 +34,8 @@ ROOT = Path(__file__).resolve().parents[1]
 MANIFEST = Path(__file__).with_name("toolchain.json")
 PLATFORMS = ("windows-x64", "linux-x64", "macos-arm64", "macos-x64")
 TOOLS = ("ffmpeg", "exiftool")
-USER_AGENT = "NiRepurpose-toolchain-fetch (+https://github.com/suncoast-servers/NiRepurpose)"
+# Plain token: exiftool.org answers HTTP 500 to user agents that contain a URL.
+USER_AGENT = "NiRepurpose-toolchain/1.0"
 LFS_POINTER_PREFIX = b"version https://git-lfs.github.com/spec/v1"
 
 
@@ -117,6 +118,12 @@ class Archive:
         info = self.members[name]
         mode = (info.external_attr >> 16) if self._zip else info.mode
         return bool(mode & 0o111)
+
+    def read(self, name: str) -> bytes:
+        if self._zip:
+            return self._zip.read(self.members[name])
+        with self._tar.extractfile(self.members[name]) as fh:
+            return fh.read()
 
     def copy_to(self, name: str, target: Path) -> None:
         target.parent.mkdir(parents=True, exist_ok=True)
