@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Contractor onboarding
+    url: https://github.com/suncoast-servers/NiRepurpose/blob/main/docs/COLLABORATOR.md
+    about: Workflow, access, and how to open PRs
+  - name: Org contributing guide
+    url: https://github.com/suncoast-servers/.github/blob/main/CONTRIBUTING.md
+    about: Suncoast Servers PR-first process
