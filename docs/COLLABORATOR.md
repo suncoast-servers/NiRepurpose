@@ -53,10 +53,21 @@ For packaging work, read `README.md` and `.github/workflows/build-release.yml`. 
 3. Before every PR:
 
    ```bash
-   python -m compileall -q NiRepurpose.py
+   python -m compileall -q NiRepurpose.py scripts
    ```
 
-   Run the app manually on your OS with sample media when touching processing or UI.
+   Run the app manually on your OS with sample media when touching processing or UI. For bundled-tool changes, see [TOOLCHAIN.md](TOOLCHAIN.md) (`fetch_tools.py`, `smoke_test.py`, Toolchain check workflow).
+
+## Co-authored commits (optional)
+
+When Ryan and you **both worked on the same implementation** (not issue-only or review-only), add GitHub co-author trailers so credit is accurate:
+
+```text
+Co-authored-by: Ryan <181164886+TheDevWhoSaysNi@users.noreply.github.com>
+Co-authored-by: Owais <124025992+owaischanna@users.noreply.github.com>
+```
+
+Use each person’s `ID+username@users.noreply.github.com` from **GitHub → Settings → Emails**. Omit trailers on solo work.
 
 4. Push and open a **Pull Request** into `main` (use the template).
 5. Address review comments. **Do not merge** unless Ryan explicitly asks.

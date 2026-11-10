@@ -46,6 +46,8 @@ Pick one:
 
 If neither is set, the workflow still pushes the branch and fails at the last step with a link to open the PR manually.
 
+**After merging the automation workflow to `main`:** run **Actions → Toolchain update → Run workflow** once (dry run is fine). You should see *Toolchain is up to date* while pins match upstream (ffmpeg 9.0.2, ExifTool 13.55 today).
+
 ## Failure modes
 
 | Situation | What happens | What to do |

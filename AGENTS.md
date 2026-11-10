@@ -24,14 +24,24 @@ Desktop **Python** app using **CustomTkinter** for bulk image/video repurposing 
 
 ```bash
 pip install -r requirements.txt
-python -m compileall -q NiRepurpose.py
+python -m compileall -q NiRepurpose.py scripts
 ```
 
 Run `python NiRepurpose.py` for UI or processing changes. Note OS tested in the PR.
 
+For changes under `scripts/toolchain.json` or toolchain workflows:
+
+```bash
+python scripts/check_toolchain_updates.py          # report only
+python scripts/fetch_tools.py --verify-only      # when tools/ is present (Windows Full)
+```
+
+See `docs/TOOLCHAIN.md` for pins, automation and failure modes.
+
 ## Packaging
 
 - Release workflow: `.github/workflows/build-release.yml`
+- Toolchain pins and weekly update automation: `docs/TOOLCHAIN.md`, `.github/workflows/toolchain-update.yml`
 - Do not create `v*` tags without Ryan’s approval.
 
 ## More detail
