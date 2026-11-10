@@ -39,7 +39,7 @@ For packaging work, read `README.md` and `.github/workflows/build-release.yml`. 
 
 `main` is **protected**: no direct pushes, PR + approval required.
 
-1. Pick a **GitHub Issue** or ask Ryan to create one with acceptance criteria.
+1. Pick a **GitHub Issue** under milestone **NiRepurpose enhancements** (start from epic **[#6](https://github.com/suncoast-servers/NiRepurpose/issues/6)**) or ask Ryan to create one.
 2. Sync and branch:
 
    ```bash

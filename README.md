@@ -93,6 +93,7 @@ This repo uses **pull requests into `main`**. Direct pushes to `main` are blocke
 | [CONTRIBUTING.md](CONTRIBUTING.md) | Everyone — links org policy + repo workflow |
 | [docs/COLLABORATOR.md](docs/COLLABORATOR.md) | Contractors — clone, branches, local checks |
 | [docs/ROADMAP.md](docs/ROADMAP.md) | Priorities and release goals |
+| [docs/PRODUCT_SPEC.md](docs/PRODUCT_SPEC.md) | OSS vs premium scope |
 | [AGENTS.md](AGENTS.md) | AI coding assistants |
 
 1. Read **COLLABORATOR.md** and org [CONTRIBUTING.md](https://github.com/suncoast-servers/.github/blob/main/CONTRIBUTING.md).
