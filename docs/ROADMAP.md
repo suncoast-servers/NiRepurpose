@@ -21,13 +21,24 @@ Reliable **Lite + Full** releases on Windows, Linux, and macOS (Apple Silicon an
 | Docs | OS instruction files + README |
 | CI | Python compile check on PRs (see `.github/workflows/python-ci.yml`) |
 
-## Backlog
+## Milestone: NiRepurpose enhancements
 
-Ryan will add **GitHub Issues** (and optionally a milestone) for contractor work. Until then:
+Active contractor work is tracked under milestone **[NiRepurpose enhancements](https://github.com/suncoast-servers/NiRepurpose/milestones)** and the **pinned epic** on the Issues tab.
 
-1. Open an issue per task with acceptance criteria before large PRs.
-2. Prefer small PRs scoped to one issue.
-3. Release/packaging changes need explicit coordination — only Ryan tags production releases unless delegated.
+| Track | Theme |
+|-------|--------|
+| Toolchain | Current stable **ffmpeg** + **ExifTool** in Full builds |
+| Automation | PR/release workflow when upstream stable versions change |
+| UX | Themes/skins + approved icon/logo |
+| Premium | **Architecture RFC only** in this repo — custom metadata + PayRam credits (see [PRODUCT_SPEC.md](PRODUCT_SPEC.md)) |
+
+**Suggested order:** toolchain upgrade → automation → UI (parallel OK) → premium ADR (Ryan sign-off before paid-feature implementation).
+
+## Backlog rules
+
+1. One issue per PR when possible.
+2. Release/packaging tags (`v*`) — Ryan unless explicitly delegated.
+3. Premium payment secrets and proprietary injection logic **do not** belong in this public repository.
 
 ## How work is assigned
 
