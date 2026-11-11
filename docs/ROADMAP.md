@@ -31,7 +31,7 @@ Active contractor work is tracked under milestone **[NiRepurpose enhancements](h
 | Toolchain | Current stable **ffmpeg** + **ExifTool** in Full builds |
 | Automation | PR/release workflow when upstream stable versions change |
 | UX | Themes/skins + approved icon/logo |
-| Premium | **Architecture RFC only** in this repo — custom metadata + PayRam credits (see [PRODUCT_SPEC.md](PRODUCT_SPEC.md)) |
+| Premium | **Architecture RFC only** in this repo — custom metadata + PayRam credits (see [PRODUCT_SPEC.md](PRODUCT_SPEC.md) and [ADR-0001](adr/0001-premium-tier-architecture.md)) |
 
 **Suggested order:** toolchain upgrade → automation → UI (parallel OK) → premium ADR (Ryan sign-off before paid-feature implementation).
 

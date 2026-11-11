@@ -16,6 +16,8 @@ Open-source **desktop** tool for bulk repurposing images and videos for social p
 
 Premium implementation may live in a **separate private repository** or a proprietary plugin/binary — decided in architecture issue. This public repo must remain forkable without leaking paid logic or payment keys.
 
+**Proposed direction:** [ADR-0001 — Premium tier architecture](adr/0001-premium-tier-architecture.md) recommends one app in two editions built from two repositories (public free, private Pro). **Proposed, not accepted** — no premium or payment code starts until Ryan approves in writing on [#5](https://github.com/suncoast-servers/NiRepurpose/issues/5).
+
 ## Ryan-owned infrastructure (premium)
 
 - **PayRam** on **Hetzner VPS** for crypto payments (nominal fee TBD: per-job credits and/or monthly cap).
