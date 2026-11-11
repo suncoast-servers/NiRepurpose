@@ -21,6 +21,7 @@ It supports both images and videos, applies subtle randomized processing, strips
 - Optional run log generation (`NiRepurpose_log.txt`)
 - Metadata stripping via `exiftool`
 - Social-friendly encode defaults via `ffmpeg`
+- Selectable themes: `Classic`, `Shrubbery (Dark)`, `Meadow (Light)`
 
 ## Releases: Lite vs Full
 
@@ -58,6 +59,30 @@ OS guides:
 - Choose `Destination Folder` in the UI.
 - NiRepurpose writes output to:
   - `<Destination Folder>/NiRepurpose_repurposed`
+
+## Themes
+
+Pick a theme from the menu at the top left. It applies immediately (your settings are kept) and is remembered for next time.
+
+| Classic (default) | Shrubbery (Dark) | Meadow (Light) |
+|-------------------|------------------|----------------|
+| ![Classic theme](docs/images/theme-classic.png) | ![Shrubbery theme](docs/images/theme-shrubbery.png) | ![Meadow theme](docs/images/theme-meadow.png) |
+| The original look; follows your system light/dark mode | Dark green, rounded controls | Light green, rounded controls |
+
+The choice is saved in `settings.json` under `%APPDATA%\NiRepurpose` (Windows), `~/Library/Application Support/NiRepurpose` (macOS) or `~/.config/NiRepurpose` (Linux). Delete that file to go back to the default.
+
+Themes live in `THEMES` in `NiRepurpose.py`: a CustomTkinter base theme plus color, corner-radius, font and spacing overrides. Add a theme by adding an entry there.
+
+### App icon
+
+![Icon at 16-256 px on light and dark backgrounds](docs/images/icon-preview.png)
+
+The icon (a leaf inside two "repurpose" arrows) is original artwork drawn in code by [`scripts/make_icons.py`](scripts/make_icons.py). No AI image generation, stock art or third-party marks were used. Regenerate `assets/nirepurpose.{png,ico,icns}` with:
+
+```bash
+python -m pip install pillow   # dev-only, not needed to run the app
+python scripts/make_icons.py
+```
 
 ## Developer Run (from source)
 

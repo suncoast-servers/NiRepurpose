@@ -9,6 +9,7 @@ Ni! 🌿
 from __future__ import annotations
 
 import datetime
+import json
 import os
 import platform
 import random
@@ -22,6 +23,7 @@ import webbrowser
 from datetime import timedelta
 from pathlib import Path
 from tkinter import filedialog, messagebox
+from tkinter import font as tkfont
 
 import customtkinter as ctk
 
@@ -40,6 +42,114 @@ NAME_KEEP = "Original"
 NAME_IOS = "iPhone"
 NAME_ANDROID = "Android"
 NAME_RANDOM = "Random"
+
+# Themes: CustomTkinter base theme + overrides (colors, corner radius), fonts and a spacing scale.
+# "widgets" values: a color string applies to light and dark mode; numbers are used as-is.
+THEME_CLASSIC = "Classic"
+THEME_SHRUBBERY = "Shrubbery (Dark)"
+THEME_MEADOW = "Meadow (Light)"
+DEFAULT_THEME = THEME_CLASSIC
+UI_FONTS = ["Segoe UI", "Helvetica Neue", "Helvetica", "Cantarell", "DejaVu Sans", "Arial"]
+THEMES = {
+    # The original look, unchanged for existing users.
+    THEME_CLASSIC: {
+        "appearance": "System",
+        "base": "blue",
+        "widgets": {},
+        "fonts": ["Arial"],
+        "body_font": None,  # CustomTkinter default
+        "title_color": None,
+        "spacing": 1.0,
+    },
+    THEME_SHRUBBERY: {
+        "appearance": "Dark",
+        "base": "green",
+        "widgets": {
+            "CTk": {"fg_color": "#101814"},
+            "CTkFrame": {"fg_color": "#18241e", "top_fg_color": "#1e2d26", "border_color": "#2b3d34", "corner_radius": 12},
+            "CTkButton": {"fg_color": "#2f9e5f", "hover_color": "#258050", "text_color": "#f2fff7",
+                          "text_color_disabled": "#7f9c8c", "corner_radius": 10},
+            "CTkLabel": {"text_color": "#e3eee8"},
+            "CTkEntry": {"fg_color": "#121c17", "border_color": "#2f4a3c", "text_color": "#e3eee8",
+                         "placeholder_text_color": "#7c9a8a", "corner_radius": 10},
+            "CTkSwitch": {"fg_color": "#33463c", "progress_color": "#3dbb74", "button_color": "#e3eee8",
+                          "button_hover_color": "#ffffff", "text_color": "#e3eee8"},
+            "CTkProgressBar": {"fg_color": "#24352c", "progress_color": "#3dbb74"},
+            "CTkOptionMenu": {"fg_color": "#2f9e5f", "button_color": "#258050", "button_hover_color": "#1d6941",
+                              "text_color": "#f2fff7", "corner_radius": 10},
+            "DropdownMenu": {"fg_color": "#18241e", "hover_color": "#24352c", "text_color": "#e3eee8"},
+        },
+        "fonts": UI_FONTS,
+        "body_font": 13,
+        "title_color": "#5fd394",
+        "spacing": 0.9,
+    },
+    THEME_MEADOW: {
+        "appearance": "Light",
+        "base": "green",
+        "widgets": {
+            "CTk": {"fg_color": "#f3f6f1"},
+            "CTkFrame": {"fg_color": "#ffffff", "top_fg_color": "#eef3ec", "border_color": "#d5e0d6",
+                         "border_width": 1, "corner_radius": 12},
+            "CTkButton": {"fg_color": "#2e8b57", "hover_color": "#246f46", "text_color": "#ffffff",
+                          "text_color_disabled": "#d4e6da", "corner_radius": 10},
+            "CTkLabel": {"text_color": "#1d2a22"},
+            "CTkEntry": {"fg_color": "#fbfdfb", "border_color": "#c3d3c7", "text_color": "#1d2a22",
+                         "placeholder_text_color": "#8a9b8f", "corner_radius": 10},
+            "CTkSwitch": {"fg_color": "#c9d6cc", "progress_color": "#2e8b57", "button_color": "#4f6b59",
+                          "button_hover_color": "#3d5546", "text_color": "#1d2a22"},
+            "CTkProgressBar": {"fg_color": "#dbe5dd", "progress_color": "#2e8b57"},
+            "CTkOptionMenu": {"fg_color": "#2e8b57", "button_color": "#246f46", "button_hover_color": "#1c5938",
+                              "text_color": "#ffffff", "corner_radius": 10},
+            "DropdownMenu": {"fg_color": "#ffffff", "hover_color": "#e6efe8", "text_color": "#1d2a22"},
+        },
+        "fonts": UI_FONTS,
+        "body_font": 13,
+        "title_color": "#1f7a4a",
+        "spacing": 0.9,
+    },
+}
+
+
+def settings_path() -> Path:
+    """Per-user settings file (theme choice)."""
+    system = platform.system()
+    if system == "Windows":
+        base = Path(os.environ.get("APPDATA") or Path.home() / "AppData" / "Roaming")
+    elif system == "Darwin":
+        base = Path.home() / "Library" / "Application Support"
+    else:
+        base = Path(os.environ.get("XDG_CONFIG_HOME") or Path.home() / ".config")
+    return base / APP_NAME / "settings.json"
+
+
+def load_settings() -> dict:
+    try:
+        data = json.loads(settings_path().read_text(encoding="utf-8"))
+        return data if isinstance(data, dict) else {}
+    except Exception:
+        return {}
+
+
+def save_settings(updates: dict) -> None:
+    try:
+        ni_path = settings_path()
+        ni_path.parent.mkdir(parents=True, exist_ok=True)
+        ni_path.write_text(json.dumps({**load_settings(), **updates}, indent=2), encoding="utf-8")
+    except Exception:
+        pass  # a read-only profile must never stop the app
+
+
+def apply_theme(name: str) -> dict:
+    """Load the base CustomTkinter theme and apply our overrides. Call before creating widgets."""
+    theme = THEMES.get(name, THEMES[DEFAULT_THEME])
+    ctk.set_appearance_mode(theme["appearance"])
+    ctk.set_default_color_theme(theme["base"])  # reloads a fresh copy, so earlier overrides are cleared
+    ni_tm = ctk.ThemeManager.theme
+    for ni_widget, ni_props in theme["widgets"].items():
+        for ni_prop, ni_value in ni_props.items():
+            ni_tm[ni_widget][ni_prop] = [ni_value, ni_value] if isinstance(ni_value, str) else ni_value
+    return theme
 
 
 def default_input_dir() -> Path:
@@ -317,10 +427,10 @@ def repurpose_video(input_path: str, output_path: str, mirror_flip=False, ffmpeg
 
 class RepurposerApp(ctk.CTk):
     def __init__(self, initial_dir: Path):
+        saved_theme = load_settings().get("theme")
+        self.theme_name = saved_theme if isinstance(saved_theme, str) and saved_theme in THEMES else DEFAULT_THEME
+        self.theme = apply_theme(self.theme_name)
         super().__init__()
-
-        ctk.set_appearance_mode("System")
-        ctk.set_default_color_theme("blue")
 
         self.input_dir = initial_dir
         self._processing = False
@@ -344,9 +454,86 @@ class RepurposerApp(ctk.CTk):
         self._build_ui()
         self._refresh_file_count()
 
+    # ------------------------------------------------------------------ themes
+    def _pad(self, value):
+        """Scale vertical spacing for the active theme. Accepts an int or a (top, bottom) tuple."""
+        ni_scale = self.theme["spacing"]
+        if isinstance(value, tuple):
+            return tuple(round(ni_v * ni_scale) for ni_v in value)
+        return round(value * ni_scale)
+
+    def _font(self, size: int, weight: str = "normal"):
+        ni_family = getattr(self, "_font_family", None)
+        if ni_family is None:
+            ni_installed = set(tkfont.families(self))
+            ni_family = next((ni_f for ni_f in self.theme["fonts"] if ni_f in ni_installed), "Arial")
+            self._font_family = ni_family
+        return (ni_family, size, weight) if weight != "normal" else (ni_family, size)
+
+    def _apply_body_font(self) -> None:
+        if self.theme["body_font"] is None:
+            return
+        ni_font = ctk.ThemeManager.theme["CTkFont"]
+        if "family" not in ni_font:  # unflattened theme: per-platform entries
+            ni_font = ni_font[{"Darwin": "macOS", "Windows": "Windows"}.get(platform.system(), "Linux")]
+        ni_font["family"] = self._font(13)[0]
+        ni_font["size"] = self.theme["body_font"]
+
+    def _change_theme(self, name: str) -> None:
+        if name == self.theme_name:
+            return
+        if self._processing:
+            self.theme_var.set(self.theme_name)
+            return
+        # Rebuild after the option menu callback has returned (the menu itself is replaced).
+        self.after(10, lambda: self._rebuild_with_theme(name))
+
+    def _rebuild_with_theme(self, name: str) -> None:
+        state = {
+            "copies": self._sanitize_copies(),
+            "naming": self.naming_var.get(),
+            "subfolders": self.subfolders_var.get(),
+            "mirror": self.mirror_var.get(),
+            "log": self.log_var.get(),
+            "status": self.status_label.cget("text"),
+            "progress": self.progress_bar.get(),
+        }
+        self.theme_name = name
+        self.theme = apply_theme(name)
+        self._font_family = None
+        save_settings({"theme": name})
+        for ni_child in self.winfo_children():
+            ni_child.destroy()
+        self.configure(fg_color=ctk.ThemeManager.theme["CTk"]["fg_color"])
+        self._build_ui()
+        self.copies_var.set(state["copies"])
+        self.naming_var.set(state["naming"])
+        self.subfolders_var.set(state["subfolders"])
+        self.mirror_var.set(state["mirror"])
+        self.log_var.set(state["log"])
+        self.status_label.configure(text=state["status"])
+        self.progress_bar.set(state["progress"])
+
+    # ------------------------------------------------------------------ UI
     def _build_ui(self):
+        self._apply_body_font()
+        title_kwargs = {"text_color": self.theme["title_color"]} if self.theme["title_color"] else {}
+
+        self.top_bar = ctk.CTkFrame(self, fg_color="transparent", border_width=0)
+        self.top_bar.pack(fill="x", padx=20, pady=self._pad(10))
+
+        self.theme_var = ctk.StringVar(value=self.theme_name)
+        self.theme_menu = ctk.CTkOptionMenu(
+            self.top_bar,
+            values=list(THEMES),
+            variable=self.theme_var,
+            command=self._change_theme,
+            width=160,
+        )
+        self.theme_menu.pack(side="left")
+
         self.github_btn = ctk.CTkButton(
-            self,
+            self.top_bar,
             text="GitHub",
             width=90,
             fg_color="transparent",
@@ -355,20 +542,22 @@ class RepurposerApp(ctk.CTk):
             border_color=("black", "white"),
             command=lambda: webbrowser.open("https://github.com/TheDevWhoSaysNi/NiRepurpose"),
         )
-        self.github_btn.pack(pady=10, padx=20, anchor="ne")
+        self.github_btn.pack(side="right")
 
-        self.label = ctk.CTkLabel(self, text="NiRepurpose Media Repurposer", font=("Arial", 24, "bold"))
-        self.label.pack(pady=10)
+        self.label = ctk.CTkLabel(
+            self, text="NiRepurpose Media Repurposer", font=self._font(24, "bold"), **title_kwargs
+        )
+        self.label.pack(pady=self._pad(10))
 
-        self.status_label = ctk.CTkLabel(self, text="Ready To Repurpose Media", font=("Arial", 14))
-        self.status_label.pack(pady=(20, 0))
+        self.status_label = ctk.CTkLabel(self, text="Ready To Repurpose Media", font=self._font(14))
+        self.status_label.pack(pady=self._pad((20, 0)))
 
         self.progress_bar = ctk.CTkProgressBar(self, width=400)
-        self.progress_bar.pack(pady=10)
+        self.progress_bar.pack(pady=self._pad(10))
         self.progress_bar.set(0)
 
         self.dir_frame = ctk.CTkFrame(self)
-        self.dir_frame.pack(padx=40, pady=(10, 10), fill="x")
+        self.dir_frame.pack(padx=40, pady=self._pad((10, 10)), fill="x")
 
         ctk.CTkLabel(self.dir_frame, text="Destination Folder:").pack(anchor="w", padx=12, pady=(10, 0))
         self.dir_label = ctk.CTkLabel(self.dir_frame, text=str(self.input_dir), wraplength=430, justify="left")
@@ -383,9 +572,9 @@ class RepurposerApp(ctk.CTk):
         self.choose_dir_btn.pack(anchor="w", padx=12, pady=(0, 12))
 
         self.settings_frame = ctk.CTkFrame(self)
-        self.settings_frame.pack(pady=20, padx=40, fill="both", expand=True)
+        self.settings_frame.pack(pady=self._pad(20), padx=40, fill="both", expand=True)
 
-        copies_row = ctk.CTkFrame(self.settings_frame, fg_color="transparent")
+        copies_row = ctk.CTkFrame(self.settings_frame, fg_color="transparent", border_width=0)
         copies_row.grid(row=0, column=0, columnspan=2, padx=20, pady=(12, 4), sticky="ew")
         ctk.CTkLabel(copies_row, text="Copies Per Media:").pack(side="left")
 
@@ -447,9 +636,9 @@ class RepurposerApp(ctk.CTk):
             command=self.start_processing,
             height=50,
             width=260,
-            font=("Arial", 18, "bold"),
+            font=self._font(18, "bold"),
         )
-        self.run_btn.pack(pady=(0, 40))
+        self.run_btn.pack(pady=self._pad((0, 40)))
 
     def choose_input_dir(self) -> None:
         folder = filedialog.askdirectory(initialdir=str(self.input_dir))
@@ -484,7 +673,11 @@ class RepurposerApp(ctk.CTk):
         self.after(0, lambda: self.progress_bar.set(value))
 
     def _enable_run(self) -> None:
-        self.after(0, lambda: self.run_btn.configure(state="normal"))
+        def ni_enable():
+            self.run_btn.configure(state="normal")
+            self.theme_menu.configure(state="normal")
+
+        self.after(0, ni_enable)
 
     def _sanitize_copies(self) -> int:
         try:
@@ -568,6 +761,7 @@ class RepurposerApp(ctk.CTk):
 
         self._processing = True
         self.run_btn.configure(state="disabled")
+        self.theme_menu.configure(state="disabled")
         self.progress_bar.set(0)
         self._set_status("Starting...")
 
