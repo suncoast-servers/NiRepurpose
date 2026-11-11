@@ -28,7 +28,7 @@ from tkinter import font as tkfont
 import customtkinter as ctk
 
 APP_NAME = "NiRepurpose"
-APP_VERSION = "v0.2.1"
+APP_VERSION = "v0.3.0"
 DEFAULT_OUTPUT_FOLDER = "NiRepurpose_repurposed"
 
 VIDEO_CRF = "14"
@@ -540,7 +540,7 @@ class RepurposerApp(ctk.CTk):
             border_width=1,
             text_color=("black", "white"),
             border_color=("black", "white"),
-            command=lambda: webbrowser.open("https://github.com/TheDevWhoSaysNi/NiRepurpose"),
+            command=lambda: webbrowser.open("https://github.com/suncoast-servers/NiRepurpose"),
         )
         self.github_btn.pack(side="right")
 
