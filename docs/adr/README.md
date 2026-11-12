@@ -8,7 +8,7 @@ Day-to-day guidance lives in [`docs/`](../), [`AGENTS.md`](../../AGENTS.md) and
 
 | ADR | Title | Status |
 |-----|-------|--------|
-| [0001](0001-premium-tier-architecture.md) | Premium tier architecture: custom metadata, credits, PayRam | **Proposed** — awaiting Ryan's written approval on [#5](https://github.com/suncoast-servers/NiRepurpose/issues/5) |
+| [0001](0001-premium-tier-architecture.md) | Premium tier architecture: custom metadata, credits, PayRam | **Accepted** — [#5](https://github.com/suncoast-servers/NiRepurpose/issues/5) |
 
 ## Statuses
 

@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Status** | **Proposed** — awaiting written approval from [@TheDevWhoSaysNi](https://github.com/TheDevWhoSaysNi) |
+| **Status** | **Accepted** — approved by [@TheDevWhoSaysNi](https://github.com/TheDevWhoSaysNi) on [#5](https://github.com/suncoast-servers/NiRepurpose/issues/5) (2026-11-12) |
 | **Issue** | [#5](https://github.com/suncoast-servers/NiRepurpose/issues/5) (epic [#6](https://github.com/suncoast-servers/NiRepurpose/issues/6)) |
 | **Author** | [@owaischanna](https://github.com/owaischanna) (delivery lead) |
 | **Decision owner** | [@TheDevWhoSaysNi](https://github.com/TheDevWhoSaysNi) |
@@ -468,7 +468,7 @@ Windows code-signing certificate (annual), Apple Developer Program (annual), Het
 - [x] Effort estimate and phased proposal (Phase 1 spike vs full product) — §9
 - [x] Explicit list of env vars/secrets Ryan provisions, names only — §10
 - [x] Clear recommendation with one-sentence rationale — §1
-- [ ] **Ryan reviews and approves direction in writing (comment on #5)** ← remaining
+- [x] **Ryan reviews and approves direction in writing (comment on #5)**
 
 ---
 
